@@ -9,7 +9,7 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
           '<tr>',
             '<tpl for="days">',
               '<td>',
-                '<table class="week-day" cellpadding="0" cellspacing="0">',
+                '<table class="week-day-table-{[this.getDate(values)]} week-day" cellpadding="0" cellspacing="0">',
                   '{[this.resetEventsCount()]}',
                   '<tpl for="eventItems">',
                     '<tpl if=".">',
@@ -41,6 +41,10 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
         '</tpl>',
       '</table>',
       {
+        getDate: function(values){
+          
+          return values.dayStart.getTime();
+        },
         resetEventsCount: function(){
           this.eventsCount = 0;
         },

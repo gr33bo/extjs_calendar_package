@@ -2,30 +2,11 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
     extend: 'Ext.app.ViewController',
 
     requires: [
-        'Ext.window.MessageBox' 
+        'Ext.window.MessageBox',
+        "CalendarPackage.view.MoreEventsWindow"
     ],
 
     alias: 'controller.calendarmaincontroller',
-    
-    colorLuminance: function(hex, lum) {
-
-	// validate hex string
-	hex = String(hex).replace(/[^0-9a-f]/gi, '');
-	if (hex.length < 6) {
-		hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-	}
-	lum = lum || 0;
-
-	// convert to decimal and change luminosity
-	var rgb = "#", c, i;
-	for (i = 0; i < 3; i++) {
-		c = parseInt(hex.substr(i*2,2), 16);
-		c = Math.round(Math.min(Math.max(0, c + (c * lum)), 255)).toString(16);
-		rgb += ("00"+c).substr(c.length);
-	}
-
-	return rgb;
-    },
     
     onDatePickerSelect: function(picker, date){
       var monthView = this.lookupReference("monthPanel");
@@ -36,7 +17,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
     eventsStoreLoaded: function(store, records){
       var monthView = this.lookupReference("monthPanel");
       if(monthView){
-        this.onMonthPanelReady(monthView);
+        this.onMonthPanelResize(monthView);
       }
     },
         
@@ -75,8 +56,35 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
           }
         });
         
-        //show extra events
-        console.log(extraEvents);
+        var extraEventsStore = viewModel.getStore("extra_events");
+        extraEventsStore.removeAll();
+        
+        extraEventsStore.add(extraEvents);
+        
+        var extraEventsWindow = this.lookupReference("extraEventsWindow");
+        if(!extraEventsWindow) {
+          var calendarContainer = this.lookupReference("calendarContainerPanel");
+          extraEventsWindow = Ext.create("CalendarPackage.view.MoreEventsWindow", {
+            constrainTo: calendarContainer
+          });
+          calendarContainer.add(extraEventsWindow);
+          
+        }
+        
+        var targetXY = targetElem.getXY();
+        targetXY[0] = targetXY[0] - 200;
+        targetXY[1] = targetXY[1] - 50;
+        
+        var tableParent = targetElem.findParentNode('table');
+        var dateClass = tableParent.classList[0];
+        
+        var myDate = new Date();
+        myDate.setTime(parseInt(dateClass.replace("week-day-table-", "")));
+       
+        extraEventsWindow.setTitle(Ext.Date.format(myDate, "M j, Y"));
+        
+        extraEventsWindow.showAt(targetXY);
+        
         
       }
     },
@@ -163,16 +171,16 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
             viewModelData = viewModel.getData(),
             eventAttributes = {};
     
-        eventsStore.sort([
-            {
-                property : 'true_start_date',
-                direction: 'ASC'
-            },
-            {
-                property : 'length',
-                direction: 'DESC'
-            }
-        ]);
+//        eventsStore.sort([
+//            {
+//                property : 'true_start_date',
+//                direction: 'ASC'
+//            },
+//            {
+//                property : 'length',
+//                direction: 'DESC'
+//            }
+//        ]);
     
         eventAttributes["startDateAttribute"] = viewModelData["startDateAttribute"];
         eventAttributes["endDateAttribute"] = viewModelData["endDateAttribute"];

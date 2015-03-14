@@ -139,21 +139,9 @@ Ext.define('CalendarPackage.view.MonthPanel', {
       me.callParent(arguments);
 
       me.cells = me.el.select('td.week-day');
-//      me.textNodes = me.eventEl.query('tbody td div');\
+      
       me.fullUpdate(me.value);
       
-        
-        //me.eventEl.set({ 'aria-labelledby': me.monthBtn.id });
-
-//        me.mon(me.eventEl, {
-//            scope: me,
-//            mousewheel: me.handleMouseWheel,
-//            click: {
-//                fn: me.handleDateClick,
-//                delegate: 'div.' + me.baseCls + '-date'
-//            }
-//        });
-        
     },
     
     setDate: function(newDate){      
@@ -180,21 +168,11 @@ Ext.define('CalendarPackage.view.MonthPanel', {
     fullUpdate: function(date) {
         var me = this,
             cells = me.cells.elements,
-            textNodes = me.textNodes,
-            disabledCls = me.disabledCellCls,
             eDate = Ext.Date,
             i = 0,
             extraDays = 0,
-            newDate = +eDate.clearTime(date, true),
             today = +eDate.clearTime(new Date()),
             selectedValue = +eDate.clearTime(me.selectedValue),
-            min = me.minDate ? eDate.clearTime(me.minDate, true) : Number.NEGATIVE_INFINITY,
-            max = me.maxDate ? eDate.clearTime(me.maxDate, true) : Number.POSITIVE_INFINITY,
-            ddMatch = me.disabledDatesRE,
-            ddText = me.disabledDatesText,
-            ddays = me.disabledDays ? me.disabledDays.join('') : false,
-            ddaysText = me.disabledDaysText,
-            format = me.format,
             days = eDate.getDaysInMonth(date),
             firstOfMonth = eDate.getFirstDateOfMonth(date),
             startingPos = firstOfMonth.getDay() - me.startDay,
@@ -210,67 +188,20 @@ Ext.define('CalendarPackage.view.MonthPanel', {
         prevStart = eDate.getDaysInMonth(previousMonth) - startingPos;
 
         current = new Date(previousMonth.getFullYear(), previousMonth.getMonth(), prevStart, me.initHour);
-//
-//        if (me.showToday) {
-//            tempDate = eDate.clearTime(new Date());
-//            disableToday = (tempDate < min || tempDate > max ||
-//                (ddMatch && format && ddMatch.test(eDate.dateFormat(tempDate, format))) ||
-//                (ddays && ddays.indexOf(tempDate.getDay()) != -1));
-//
-//            if (!me.disabled) {
-//                me.todayBtn.setDisabled(disableToday);
-//            }
-//        }
-//
+        
         setCellClass = function(cellIndex, cls){
             var cell = cells[cellIndex];
             cell.className = "week-day";
             value = +eDate.clearTime(current, true);
             
-//            // store dateValue number as an expando
+            // store dateValue number as an expando
             cell.firstChild.dateValue = value;
             if (value == today) {
                 cls += ' ' + me.todayCls;
-//                cell.firstChild.title = me.todayText;
-//                
-//                // Extra element for ARIA purposes
-//                me.todayElSpan = Ext.DomHelper.append(cell.firstChild, {
-//                    tag: 'span',
-//                    cls: Ext.baseCSSPrefix + 'hidden-clip',
-//                    html: me.todayText
-//                }, true);
             } else if(value == selectedValue){
               cls += ' ' + me.selectedDayCls;
             }
-//            if (value == newDate) {
-//                me.activeCell = cell;
-//                me.eventEl.dom.setAttribute('aria-activedescendant', cell.id);
-//                cell.setAttribute('aria-selected', true);
-//                cls += ' ' + me.selectedCls;
-//                me.fireEvent('highlightitem', me, cell);
-//            } else {
-//                cell.setAttribute('aria-selected', false);
-//            }
-//
-//            if (value < min) {
-//                cls += ' ' + disabledCls;
-//                cell.setAttribute('aria-label', me.minText);
-//            }
-//            else if (value > max) {
-//                cls += ' ' + disabledCls;
-//                cell.setAttribute('aria-label', me.maxText);
-//            }
-//            else if (ddays && ddays.indexOf(current.getDay()) !== -1){
-//                cell.setAttribute('aria-label', ddaysText);
-//                cls += ' ' + disabledCls;
-//            }
-//            else if (ddMatch && format){
-//                formatValue = eDate.dateFormat(current, format);
-//                if(ddMatch.test(formatValue)){
-//                    cell.setAttribute('aria-label', ddText.replace('%0', formatValue));
-//                    cls += ' ' + disabledCls;
-//                }
-//            }
+            
             if(cls){
               cell.className = cell.className + " " + cls;
             }
@@ -320,8 +251,8 @@ Ext.define('CalendarPackage.view.MonthPanel', {
         var eventStart = eventRecord.get(eventAttributes["startDateAttribute"]);
         var eventEnd = eventRecord.get(eventAttributes["endDateAttribute"]);
         
-//        //for each eventRecord
-//        //figure out the week it belongs in
+        //for each eventRecord
+        //figure out the week it belongs in
         var relevantWeeks = Ext.Array.filter(weekTables, function(item){
           return (Ext.Date.between(eventStart, item.weekStart, item.weekEnd)) || 
                   (Ext.Date.between(eventEnd, item.weekStart, item.weekEnd));
@@ -374,10 +305,6 @@ Ext.define('CalendarPackage.view.MonthPanel', {
                 
               }
               
-            
-//            if(eventRecord.get("id") == 4){
-//              console.log(eventRecord.get("title"), slot)
-//            }
               day["eventItems"][slot] = eventRecord.data;
             }
           
@@ -385,7 +312,6 @@ Ext.define('CalendarPackage.view.MonthPanel', {
         });
       });
       
-//      console.log(weekTables);
       
       this.weekTablesData = weekTables;      
       
@@ -420,8 +346,7 @@ Ext.define('CalendarPackage.view.MonthPanel', {
         weekRowContainer.setHtml("");
         
         if(hasEvents){
-//          console.log(weekRowContainer)
-          var weekRow = Ext.create("CalendarPackage.view.templates.WeekRow", {
+          Ext.create("CalendarPackage.view.templates.WeekRow", {
             totalEventRowsPerWeek: this.totalEventRowsPerWeek,
             eventAttributes: eventAttributes,
             data: singleWeekData,
@@ -437,7 +362,6 @@ Ext.define('CalendarPackage.view.MonthPanel', {
     
     setUpMouseEvents: function(){
       //get event cell items, add mouse over, mouse click, mouse out event handlers
-//      console.log(this);
       var dom = this.el.dom;
       
       
@@ -447,9 +371,8 @@ Ext.define('CalendarPackage.view.MonthPanel', {
             click: this.onEventMouseClick,
             mouseover: this.onEventMouseOver,
             mouseout: this.onEventMouseOut,
-            scope: this // Important. Ensure "this" is correct during handler execution
+            scope: this 
         });
-//        elem.on("mouseover", this.onEventCellOver, this);
       }, this);
     },
     
@@ -513,8 +436,7 @@ Ext.define('CalendarPackage.view.MonthPanel', {
     listeners: {
       onEventMouseClick: 'onEventCellClick',
       onEventCellOver: 'onEventCellOver',
-      onEventCellOut: 'onEventCellOut',
-//      boxready: "onMonthPanelReady",      
+      onEventCellOut: 'onEventCellOut',    
       resize: "onMonthPanelResize"//fires on resize AND when ready for first time
     }
     

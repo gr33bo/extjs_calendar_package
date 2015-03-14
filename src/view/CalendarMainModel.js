@@ -13,12 +13,39 @@ Ext.define('CalendarPackage.view.CalendarMainModel', {
       allDayAttribute: "is_all_day"
     },
     stores: {
+      extra_events: {
+        model: 'Event',
+        autoLoad: false,
+        autoSync: false,
+        remoteFilter: false,
+        remoteSort: false,
+        sorters: [
+            {
+                property : 'true_start_date',
+                direction: 'ASC'
+            },
+            {
+                property : 'length',
+                direction: 'DESC'
+            }
+        ]
+      },
       events: {
           model: 'Event',
           autoLoad: false,
           autoSync: false,
           remoteFilter: false,
           remoteSort: false,
+          sorters: [
+              {
+                  property : 'true_start_date',
+                  direction: 'ASC'
+              },
+              {
+                  property : 'length',
+                  direction: 'DESC'
+              }
+          ],
           data: [
             {
               id: 1,
