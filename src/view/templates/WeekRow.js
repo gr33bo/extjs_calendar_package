@@ -83,7 +83,7 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
             });
             
             return "<td class='more-events-cell event-cell "+extraClasses.join(" ")+"'>" +
-                     "<div>+"+(dayValues["eventItems"].length-this.totalEventRowsPerWeek+1)+" items</div>"+
+                     "<div>+"+totalExtraEvents+" items</div>"+
                    "</td>";
           }
           

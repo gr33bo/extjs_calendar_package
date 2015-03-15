@@ -57,9 +57,6 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
         });
         
         var extraEventsStore = viewModel.getStore("extra_events");
-        extraEventsStore.removeAll();
-        
-        extraEventsStore.add(extraEvents);
         
         var extraEventsWindow = this.lookupReference("extraEventsWindow");
         if(!extraEventsWindow) {
@@ -67,6 +64,17 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
           extraEventsWindow = Ext.create("CalendarPackage.view.MoreEventsWindow", {
             constrainTo: calendarContainer
           });
+          
+          
+          var viewModelData = viewModel.getData(),
+              eventAttributes = {};
+
+          eventAttributes["startDateAttribute"] = viewModelData["startDateAttribute"];
+          eventAttributes["endDateAttribute"] = viewModelData["endDateAttribute"];
+          eventAttributes["titleAttribute"] = viewModelData["titleAttribute"];
+          eventAttributes["allDayAttribute"] = viewModelData["allDayAttribute"];
+          extraEventsWindow.eventAttributes = eventAttributes;
+          
           calendarContainer.add(extraEventsWindow);
           
         }
@@ -80,8 +88,20 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
         
         var myDate = new Date();
         myDate.setTime(parseInt(dateClass.replace("week-day-table-", "")));
+
+        extraEventsWindow.extraEventsDate = myDate;
        
         extraEventsWindow.setTitle(Ext.Date.format(myDate, "M j, Y"));
+        
+        var dataView = this.lookupReference("extraEventsView");
+        if(dataView){
+          dataView.setTplItems();
+        }
+        
+        extraEventsStore.removeAll();
+        
+        extraEventsStore.add(extraEvents);
+        
         
         extraEventsWindow.showAt(targetXY);
         

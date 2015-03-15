@@ -153,6 +153,8 @@ div.calendar-package {
                         &.highlighted {
                           opacity: 0.9;
                         }
+                        
+                        cursor: pointer;
                       }
                      
                       &.all-day-cell {                        
@@ -206,4 +208,46 @@ div.calendar-package {
       } 
     }
   }
+}
+
+.extra-events-window {
+  .event-cell {
+    height: 19px;
+    margin-top: 1px;
+    padding: 1px 10px 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    
+    &:hover {
+      opacity: 0.7;
+    }
+    
+    cursor: pointer;
+    
+    &.event-start-cell {
+      -webkit-border-top-left-radius: 10px;
+      -webkit-border-bottom-left-radius: 10px;
+      -moz-border-radius-topleft: 10px;
+      -moz-border-radius-bottomleft: 10px;
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+    
+    &.event-end-cell {
+      -webkit-border-top-right-radius: 10px;
+      -webkit-border-bottom-right-radius: 10px;
+      -moz-border-radius-topright: 10px;
+      -moz-border-radius-bottomright: 10px;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    
+    &.multi-day-cell, &.all-day-cell {
+      &:hover {
+        opacity: 0.9;
+      }
+      color: #fff;
+    }
+  }
+  
 }
