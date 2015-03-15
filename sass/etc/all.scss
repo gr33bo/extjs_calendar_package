@@ -62,6 +62,9 @@ div.calendar-package {
           td.week-day {
             position: relative;
             border-right: 1px solid #ccc;
+            
+            cursor: pointer;
+            
             &:last-child {
               border-right: none;
             }
@@ -135,7 +138,7 @@ div.calendar-package {
                   /*position: absolute;*/
                   /*top: 20px;*/
                   /*height: calc(100% - 20px);*/
-                  margin-top: 20px;
+                  /*margin-top: 20px;*/
                   background: transparent;
                   border-collapse: collapse;
                   
@@ -143,6 +146,8 @@ div.calendar-package {
                     height: 20px;
                       
                     td {
+                      cursor: pointer;
+                      
                       div {
                         padding: 0px 10px;
                         height: 19px;

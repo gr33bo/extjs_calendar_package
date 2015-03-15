@@ -8,6 +8,31 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
 
     alias: 'controller.calendarmaincontroller',
     
+    onDayCellClick: function(event, htmlTarget){
+      var htmlId = htmlTarget.id;
+      
+      var myDate = new Date();
+      myDate.setTime(parseInt(htmlId.replace("date-cell-", "")));
+      
+      this.showCreateEventWindow(myDate);
+    },
+    
+    onEmptyCellClick: function(event, htmlTarget){
+      var parentTable = Ext.get(htmlTarget).findParent("table.week-day");
+      var classList = parentTable.classList;
+      var dateClass = classList[0];
+      
+      
+      var myDate = new Date();
+      myDate.setTime(parseInt(dateClass.replace("week-day-table-", "")));
+      
+      this.showCreateEventWindow(myDate);
+    },
+    
+    showCreateEventWindow: function(date){
+      console.log("SHOW CREATE EVENT WINDOW", date);
+    },
+    
     onDatePickerSelect: function(picker, date){
       var monthView = this.lookupReference("monthPanel");
       
@@ -15,6 +40,12 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       this.onMonthPanelResize(monthView);  
     },
     eventsStoreLoaded: function(store, records){
+      var monthView = this.lookupReference("monthPanel");
+      if(monthView){
+        this.onMonthPanelResize(monthView);
+      }
+    },
+    eventsStoreFilterChange: function(store, records){
       var monthView = this.lookupReference("monthPanel");
       if(monthView){
         this.onMonthPanelResize(monthView);
@@ -157,32 +188,31 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       }
     },
     
-    onMonthPanelReady: function(monthView){
+    onMainCalendarPanelReady: function(panel){
       var viewModel = this.getViewModel(),
-          eventsStore = viewModel.getStore("events");
+          calendarsStore = viewModel.getStore("calendars");
   
-      eventsStore.sort([
-          {
-              property : 'true_start_date',
-              direction: 'ASC'
-          },
-          {
-              property : 'length',
-              direction: 'DESC'
+      if(calendarsStore.data.items.length > 0){
+        var checkboxes = [];
+       
+        calendarsStore.each(function(calendarRecord){
+          var checkboxObj = {
+            boxLabel: calendarRecord.get('name'),
+            inputValue: calendarRecord.get('id'),
+            checked: true
+          };
+          var backgroundColor = calendarRecord.get("background_color")
+          if(backgroundColor && backgroundColor.trim() != ""){
+            checkboxObj.style = "color: "+calendarRecord.get("background_color")+";";
           }
-      ]);
-      
-      var viewModelData = viewModel.getData(),
-          eventAttributes = {};
-      
-      eventAttributes["startDateAttribute"] = viewModelData["startDateAttribute"];
-      eventAttributes["endDateAttribute"] = viewModelData["endDateAttribute"];
-      eventAttributes["titleAttribute"] = viewModelData["titleAttribute"];
-      eventAttributes["allDayAttribute"] = viewModelData["allDayAttribute"];
-      
-      
-      monthView.setEvents(eventsStore, eventAttributes); 
-      monthView.drawEvents(eventAttributes);
+          checkboxes.push(checkboxObj);
+        });
+        this.lookupReference("calendarSelectionCheckboxes").add(checkboxes);
+        this.lookupReference("calendarSelectionPanel").show();
+        //load events store for calendars
+      } else {
+        //load events store, no calendar filter
+      }
     },
     onMonthPanelResize: function(monthView){
       if(monthView){
@@ -191,25 +221,47 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
             viewModelData = viewModel.getData(),
             eventAttributes = {};
     
-//        eventsStore.sort([
-//            {
-//                property : 'true_start_date',
-//                direction: 'ASC'
-//            },
-//            {
-//                property : 'length',
-//                direction: 'DESC'
-//            }
-//        ]);
-    
         eventAttributes["startDateAttribute"] = viewModelData["startDateAttribute"];
         eventAttributes["endDateAttribute"] = viewModelData["endDateAttribute"];
         eventAttributes["titleAttribute"] = viewModelData["titleAttribute"];
         eventAttributes["allDayAttribute"] = viewModelData["allDayAttribute"];
         
+        
+        var viewModel = this.getViewModel(),
+            calendarStore = viewModel.getStore("calendars");
+        
+        eventsStore.each(function(eventRecord){
+        
+          if(eventRecord.get("calendar_id")){
+            var calendarRecord = calendarStore.getById(eventRecord.get("calendar_id"));
+            eventRecord.set("background_color", calendarRecord.get("background_color"));
+          }
+        });
+        
         monthView.setEvents(eventsStore, eventAttributes); 
         monthView.drawEvents(eventAttributes);
       }
+      
+    },
+    
+    onCalendarSelectionChange: function(checkboxGroup) {
+      var calendarIds = checkboxGroup.getValue()["calendar_ids[]"];
+      
+      if(typeof(calendarIds) == "number"){
+        calendarIds = [calendarIds];
+      }
+      
+      var viewModel = this.getViewModel(),
+          eventsStore = viewModel.getStore("events");
+  
+      eventsStore.clearFilter();
+      eventsStore.filterBy(function(record){
+        if(calendarIds){
+          return calendarIds.indexOf(record.get("calendar_id")) != -1;          
+        } else {
+          return false;
+        }
+      });
       
     },
     

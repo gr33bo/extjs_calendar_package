@@ -1,7 +1,7 @@
 Ext.define('CalendarPackage.model.Event', {
     extend: 'CalendarPackage.model.Base',
     fields: [
-        { name: 'id',                       type: 'integer', useNull: true},
+//        { name: 'id',                       type: 'integer', useNull: true},
         //{ name: 'calendar_id',              type: 'integer', useNull: true},
         { name: 'title',                    type: 'string'},
 //        { name: 'start_date',               type: 'date', dateFormat: 'Y-m-d H:i:s O'},
@@ -32,6 +32,8 @@ Ext.define('CalendarPackage.model.Event', {
               
           
         }},
+        { name: 'calendar_id',              reference:'Calendar'},
+        { name: 'background_color',         type: 'string'},
 //        { name: 'location',                 type: 'string'},
 //        { name: 'notes',                    type: 'string'},
 //        { name: 'reminder',                 type: 'string'}, //reminder

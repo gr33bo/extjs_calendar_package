@@ -10,6 +10,7 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
             '<tpl for="days">',
               '<td>',
                 '<table class="week-day-table-{[this.getDate(values)]} week-day" cellpadding="0" cellspacing="0">',
+                  '<tr><td></td></tr>',
                   '{[this.resetEventsCount()]}',
                   '<tpl for="eventItems">',
                     '<tpl if=".">',
@@ -90,12 +91,25 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
           return '<td></td>';
         },
         getInlineStyle: function(values, dayValues){
-          if(values[this.eventAttributes["allDayAttribute"]]){
-            return "style='background: #306da6;'";
-          } else if(values.length > 60*60*24*1000) {
-            return "style='background: #86a723;'";
+
+          if(values[this.eventAttributes["allDayAttribute"]]){          
+            if(values.background_color){
+              return "style='background: "+values.background_color+";'";
+            } else {
+              return "style='background: #306da6;'";
+            }
+          } else if(values.length > 60*60*24*1000) {      
+            if(values.background_color){
+              return "style='background: "+values.background_color+";'";
+            } else {
+              return "style='background: #86a723;'";
+            }
           } else {
-            return '';
+            if(values.background_color){
+              return "style='color: "+values.background_color+";'";
+            } else {
+              return '';
+            }
           }
         },
         getDayArray: function(){

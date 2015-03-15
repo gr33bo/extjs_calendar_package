@@ -4,7 +4,8 @@ Ext.define('CalendarPackage.view.CalendarMainPanel', {
     requires: [
         'Ext.layout.container.HBox',
         'CalendarPackage.view.DatePickerPanel',
-        'CalendarPackage.view.CalendarPanel'
+        'CalendarPackage.view.CalendarPanel',
+        'CalendarPackage.view.CalendarSelectionPanel'
     ],
     
     controller: 'calendarmaincontroller',
@@ -23,13 +24,29 @@ Ext.define('CalendarPackage.view.CalendarMainPanel', {
     
     items: [
       {
-        xtype:'datepickerpanel',
-        width: 215
+        layout: 'vbox',
+        minWidth: 215,
+        
+        scrollable: 'vertical',
+        
+        items: [
+          {
+            xtype:'datepickerpanel'
+          },
+          {
+            xtype: 'calendarselectionpanel',
+            hidden: true
+          }
+          
+        ]
       },
       {
         xtype:'calendarpanel',
         flex: 1
       }
-    ]
+    ],
+    listeners: {
+      render: 'onMainCalendarPanelReady'
+    }
 
 });

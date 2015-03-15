@@ -364,13 +364,30 @@ Ext.define('CalendarPackage.view.MonthPanel', {
       //get event cell items, add mouse over, mouse click, mouse out event handlers
       var dom = this.el.dom;
       
-      
+//      console.log(Ext.dom.Query.select("td.week-day", dom))
+//      console.log(Ext.dom.Query.select("table.week-day tbody tr td:not(.event-cell)", dom))
       Ext.each(Ext.dom.Query.select("td.event-cell", dom), function(domElem){
         var elem = Ext.get(domElem);
         elem.on({
             click: this.onEventMouseClick,
             mouseover: this.onEventMouseOver,
             mouseout: this.onEventMouseOut,
+            scope: this 
+        });
+      }, this);
+      
+      Ext.each(Ext.dom.Query.select("td.week-day", dom), function(domElem){
+        var elem = Ext.get(domElem);
+        elem.on({
+            click: this.onDayCellClick,
+            scope: this 
+        });
+      }, this);
+      
+      Ext.each(Ext.dom.Query.select("table.week-day tr td:not(.event-cell)", dom), function(domElem){
+        var elem = Ext.get(domElem);
+        elem.on({
+            click: this.onEmptyCellClick,
             scope: this 
         });
       }, this);
@@ -385,6 +402,14 @@ Ext.define('CalendarPackage.view.MonthPanel', {
     },
     onEventMouseOut: function(e, htmlTarget){
       this.fireEvent("onEventCellOut", e, htmlTarget);
+    },
+    
+    onDayCellClick: function(e, htmlTarget){
+      this.fireEvent("onDayCellClick", e, htmlTarget);
+    },
+    
+    onEmptyCellClick: function(e, htmlTarget){
+      this.fireEvent("onEmptyCellClick", e, htmlTarget);
     },
     
     getWeekTableObjects: function(){
@@ -436,7 +461,9 @@ Ext.define('CalendarPackage.view.MonthPanel', {
     listeners: {
       onEventMouseClick: 'onEventCellClick',
       onEventCellOver: 'onEventCellOver',
-      onEventCellOut: 'onEventCellOut',    
+      onEventCellOut: 'onEventCellOut',   
+      onDayCellClick: 'onDayCellClick',    
+      onEmptyCellClick: 'onEmptyCellClick',     
       resize: "onMonthPanelResize"//fires on resize AND when ready for first time
     }
     
