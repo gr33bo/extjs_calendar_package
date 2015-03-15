@@ -3,18 +3,24 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
 
     requires: [
         'Ext.window.MessageBox',
-        "CalendarPackage.view.MoreEventsWindow"
+        'CalendarPackage.model.Event',
+        "CalendarPackage.view.MoreEventsWindow",
+        "CalendarPackage.view.EditEventWindow"
     ],
 
     alias: 'controller.calendarmaincontroller',
     
     onDayCellClick: function(event, htmlTarget){
-      var htmlId = htmlTarget.id;
+      var htmlElem = Ext.get(htmlTarget);
+      if(!htmlElem.hasCls("week-day")){
+        htmlElem = htmlElem.parent();
+      }
+      var htmlId = htmlElem.id;
       
       var myDate = new Date();
       myDate.setTime(parseInt(htmlId.replace("date-cell-", "")));
       
-      this.showCreateEventWindow(myDate);
+      this.newEvent(myDate);
     },
     
     onEmptyCellClick: function(event, htmlTarget){
@@ -26,11 +32,44 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       var myDate = new Date();
       myDate.setTime(parseInt(dateClass.replace("week-day-table-", "")));
       
-      this.showCreateEventWindow(myDate);
+      this.newEvent(myDate);
     },
     
-    showCreateEventWindow: function(date){
-      console.log("SHOW CREATE EVENT WINDOW", date);
+    newEvent: function(date){
+      var viewModel = this.getViewModel();
+      
+      var newEvent = new CalendarPackage.model.Event({title:'new event', start_date: date});
+      viewModel.setData({theEvent: newEvent});
+      
+      
+      this.showEditEventWindow("New");
+    },
+    
+    showEditEventWindow: function(newOrEdit){
+      var eventWindow = this.lookupReference("editEventWindow"),
+          calendarContainer = this.lookupReference("calendarContainerPanel");
+  
+      if(!eventWindow){
+          eventWindow = Ext.create("CalendarPackage.view.EditEventWindow", {
+            constrainTo: calendarContainer
+          });
+          
+          
+//          var viewModelData = viewModel.getData(),
+//              eventAttributes = {};
+//
+//          eventAttributes["startDateAttribute"] = viewModelData["startDateAttribute"];
+//          eventAttributes["endDateAttribute"] = viewModelData["endDateAttribute"];
+//          eventAttributes["titleAttribute"] = viewModelData["titleAttribute"];
+//          eventAttributes["allDayAttribute"] = viewModelData["allDayAttribute"];
+//          eventWindow.eventAttributes = eventAttributes;
+          
+          calendarContainer.add(eventWindow);
+      }
+      
+      eventWindow.setTitle(newOrEdit+" Event");
+      
+      eventWindow.show();
     },
     
     onDatePickerSelect: function(picker, date){
@@ -50,6 +89,15 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       if(monthView){
         this.onMonthPanelResize(monthView);
       }
+    },
+    
+    onMoreEventClick: function(view, record){
+      var viewModel = this.getViewModel();
+      viewModel.setData({theEvent: record});
+      
+      this.lookupReference("extraEventsWindow").hide();
+      
+      this.showEditEventWindow("Edit");
     },
         
     onEventCellClick: function(event, htmlTarget){
@@ -73,8 +121,11 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       if(idClassTest.test(idClass)){
         var eventId = parseInt(idClass.replace("event-cell-", ""));
         var eventRecord = eventStore.getById(eventId);
+        
         //show event form window
-        console.log(eventRecord);
+        viewModel.setData({theEvent: eventRecord});      
+      
+        this.showEditEventWindow("Edit");
       } else if(moreClassTest.test(idClass)){
         
         var extraEvents = [];

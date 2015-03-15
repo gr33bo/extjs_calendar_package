@@ -104,6 +104,10 @@ Ext.define('CalendarPackage.view.MoreEventsWindow', {
           
           this.tpl.extraEventsDate = containerWindow.extraEventsDate;
           this.tpl.eventAttributes = containerWindow.eventAttributes;
+        },
+        
+        listeners: {
+          itemclick: 'onMoreEventClick'
         }
       }
     ]

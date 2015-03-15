@@ -133,6 +133,8 @@ Ext.define('CalendarPackage.view.MonthPanel', {
         });
           
     },
+    
+    
     onRender: function(container, position) {
       var me = this;
 
@@ -183,6 +185,7 @@ Ext.define('CalendarPackage.view.MonthPanel', {
         if (startingPos < 0) {
             startingPos += 7;
         }
+        
 
         days += startingPos;
         prevStart = eDate.getDaysInMonth(previousMonth) - startingPos;
@@ -208,6 +211,16 @@ Ext.define('CalendarPackage.view.MonthPanel', {
         };
 
 
+        //Ext.get() throws error/warning when the element it gets is
+        //different from an element it got previously with the same id
+        //this stops that error.
+        for(; i < me.numDays; ++i) {
+          var currentCell = cells[i];
+          Ext.get(currentCell).setId("random-id-"+i);
+        }
+        
+        i = 0;
+        
         for(; i < me.numDays; ++i) {
           current.setDate(current.getDate() + 1);
           var currentCell = cells[i];
@@ -323,6 +336,10 @@ Ext.define('CalendarPackage.view.MonthPanel', {
       var weekRowHeight = firstWeekRow.getHeight();
 
       this.totalEventRowsPerWeek = parseInt((weekRowHeight-20)/20);
+ 
+      Ext.each(Ext.ComponentQuery.query("weekrow"), function(weekRow){
+        weekRow.destroy();
+      });
  
       Ext.each(this.weekTablesData, function(singleWeekData, i){
 

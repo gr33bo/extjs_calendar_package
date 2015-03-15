@@ -1,6 +1,8 @@
 Ext.define('CalendarPackage.view.templates.WeekRow', {
     extend: 'Ext.view.View',
     
+    alias: ['widget.weekrow'],
+    
 //    style: "margin-top: 20px",
     cls: "week-events-container",
     tpl: new Ext.XTemplate(
