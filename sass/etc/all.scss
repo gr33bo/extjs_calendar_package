@@ -256,3 +256,32 @@ div.calendar-package {
   }
   
 }
+
+.x-boundlist-item {
+  span.color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+}
+
+.calendar-selector {
+  input {
+    padding-left: 20px;
+  }
+  
+  .x-form-text-wrap {
+    
+    position: relative;
+    .calendar-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 10px;
+      position: absolute;
+      top: 6px;
+      left: 5px;
+    }
+  }
+  
+}

@@ -97,8 +97,8 @@ Ext.define('CalendarPackage.view.CalendarMainModel', {
             {
               id: 3,
               title: "RAWR3",
-              start_date: "2015-05-06 12:00:00",
-              end_date: "2015-05-06 13:00:00",
+              start_date: "2015-05-06 16:00:00",
+              end_date: "2015-05-06 17:00:00",
               calendar_id: 3
             },
             {

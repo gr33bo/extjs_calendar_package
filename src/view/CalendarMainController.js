@@ -340,5 +340,29 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
           }
         })
       }
+    },
+    
+    //TODO: These 2 methods need to go in controller for eventWindow
+    onAllDayChange: function(checkbox){
+      if(!checkbox.getValue()){
+        this.lookupReference("startDateField").showTimeField();
+        this.lookupReference("endDateField").showTimeField();
+      } else {
+        this.lookupReference("startDateField").hideTimeField();
+        this.lookupReference("endDateField").hideTimeField();
+      }
+    },
+    onEventCalendarChange: function(combobox){
+      var viewModel = this.getViewModel(),
+          calendarStore = viewModel.getStore("calendars");
+  
+      var calendarRecord = calendarStore.getById(combobox.getValue());
+      
+      var dot = combobox.el.down(".calendar-dot");
+      if(calendarRecord){
+        dot.dom.style.backgroundColor = calendarRecord.get("background_color");
+      } else {
+        dot.dom.style.backgroundColor = "transparent";
+      }
     }
 });
