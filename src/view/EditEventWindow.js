@@ -41,7 +41,7 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
             }
           },
           {
-            xtype: 'container',
+            xtype: 'fieldcontainer',
             layout: 'hbox',
             items: [
               {
@@ -109,6 +109,28 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
               }
             ]
           }
+        ]
+      }
+    ],
+    dockedItems: [
+      {
+        xtype: 'toolbar',
+        dock: 'bottom',
+        ui: 'footer', 
+        items: [
+          '->',
+          {
+            text: 'Save',
+            formBind: true,
+            listeners: {
+              click: 'onEventSave'
+            },
+            bind: {
+//              hidden: '{creatingNewIncident}',
+//              disabled: '{!validIncidentForms}'
+            }
+          },
+          '->'
         ]
       }
     ]

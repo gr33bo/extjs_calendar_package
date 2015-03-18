@@ -364,5 +364,14 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       } else {
         dot.dom.style.backgroundColor = "transparent";
       }
+    },
+    
+    onEventSave: function(){
+      var viewModel = this.getViewModel(),
+          eventRecord = viewModel.getData()["theEvent"];
+  
+  
+     eventRecord.commit();
+      console.log(eventRecord.data);
     }
 });

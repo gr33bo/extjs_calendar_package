@@ -73,9 +73,9 @@ Ext.define('Ext.ux.form.DateTimeField', {
             hideLabel: true,
             width: this.dateFieldWidth,
             listeners: {
-                'blur': {
+                'change': {
                     fn: function(){
-//                        this.onFieldChange('date', 'start');
+                        this.onFieldChange();
                     },
                     scope: this
                 }
@@ -100,16 +100,9 @@ Ext.define('Ext.ux.form.DateTimeField', {
             maxValue: this.maxTime,
             minValue: this.minTime,
             listeners: {
-                'select': {
+                'change': {
                     fn: function(){
-//                        this.onFieldChange('time', 'start');
-                    },
-                    scope: this
-                }, 
-                
-                'blur': {
-                    fn: function(){
-//                        this.onFieldChange('time', 'start');
+                        this.onFieldChange();
                     },
                     scope: this
                 }
@@ -148,5 +141,44 @@ Ext.define('Ext.ux.form.DateTimeField', {
     showTimeField: function(){
       this.timeField.enable();
       this.timeField.show();
+    },
+    
+    getValue: function(){
+        var val = this.getDT('start');
+        
+        return val;
+    },
+
+    // private getValue helper
+    getDT: function(startend){
+        //TODO console log how this function will break
+        var time = this.timeField.getValue(),
+            dt = this.dateField.getValue();
+
+        // console.log(dt);
+        // console.log(time);
+
+        if(Ext.isDate(dt)){
+            // console.log('dt');
+            dt = Ext.Date.format(dt, this.dateField.format);
+        } else {
+            // console.log('got null');
+            return null;
+        }
+        if(time && time !== ''){
+            // console.log('time');
+            time = Ext.Date.format(time, this.timeField.format);
+            var val = Ext.Date.parseDate(dt + ' ' + time, this.dateField.format + ' ' + this.timeField.format);
+            // console.log(val);
+            return val;
+        }
+        return Ext.Date.parseDate(dt, this.dateField.format);
+    },
+    
+    onFieldChange: function(){
+      console.log(this.getValue())
+      this.fireEvent('change', this, this.getValue());
+
+      this.publishState('value', this.getValue());
     }
 });
