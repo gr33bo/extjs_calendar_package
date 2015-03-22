@@ -268,7 +268,8 @@ Ext.define('CalendarPackage.view.MonthPanel', {
         //figure out the week it belongs in
         var relevantWeeks = Ext.Array.filter(weekTables, function(item){
           return (Ext.Date.between(eventStart, item.weekStart, item.weekEnd)) || 
-                  (Ext.Date.between(eventEnd, item.weekStart, item.weekEnd));
+                  (Ext.Date.between(eventEnd, item.weekStart, item.weekEnd)) ||
+                  (eventStart < item.weekStart && eventEnd > item.weekEnd);
         });
 
         //for each relevant week
@@ -289,7 +290,8 @@ Ext.define('CalendarPackage.view.MonthPanel', {
             } else {
               if(Ext.Date.between(day["dayStart"], eventStart, eventEnd) || 
                   Ext.Date.between(day["dayEnd"], eventStart, eventEnd) ||
-                   Ext.Date.between(eventStart, day["dayStart"], day["dayEnd"])){
+                   Ext.Date.between(eventStart, day["dayStart"], day["dayEnd"]) ||
+                 (eventStart < day["dayStart"] && eventEnd > day["dayEnd"])){
                 matches = true;
               }
             }  
