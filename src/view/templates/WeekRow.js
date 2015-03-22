@@ -6,6 +6,7 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
 //    style: "margin-top: 20px",
     cls: "week-events-container",
     tpl: new Ext.XTemplate(
+      '{[this.resetTitleIds()]}',
       '<table class="week-day-container">',
         '<tpl for=".">',
           '<tr>',
@@ -50,6 +51,9 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
         },
         resetEventsCount: function(){
           this.eventsCount = 0;
+        },
+        resetTitleIds: function() {
+          this.titleIds = [];
         },
         incrementEventsCount: function(){
           this.eventsCount += 1;
@@ -118,22 +122,25 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
           return new Array(this.totalEventRowsPerWeek);
         },
         getTitle: function(values, dayValues){
+          if(this.titleIds.indexOf(values.id) != -1){
+            return "";
+          }
           
           var eventStartDate = values[this.eventAttributes["startDateAttribute"]];
           var dayStart = dayValues["dayStart"];
-          if(dayValues['weekStart'] || Ext.Date.format(eventStartDate, 'Y-m-d') == Ext.Date.format(dayStart, 'Y-m-d')){
-            if(values[this.eventAttributes["allDayAttribute"]]) {
-              return values[this.eventAttributes["titleAttribute"]];
-            } else {
-              var startDate = values[this.eventAttributes["startDateAttribute"]];
-
-              var startTime = Ext.Date.format(startDate, 'g:i a');
-
-              return startTime + ' ' + values[this.eventAttributes["titleAttribute"]];
-            }
+          
+          if(values[this.eventAttributes["allDayAttribute"]]) {
+            this.titleIds.push(values.id);
+            return values[this.eventAttributes["titleAttribute"]];
           } else {
-            return '';
+            this.titleIds.push(values.id);
+            var startDate = values[this.eventAttributes["startDateAttribute"]];
+
+            var startTime = Ext.Date.format(startDate, 'g:i a');
+
+            return startTime + ' ' + values[this.eventAttributes["titleAttribute"]];
           }
+          
         },
         getStart: function(eventValues){
            var eventStartDate = eventValues[this.eventAttributes["startDateAttribute"]];

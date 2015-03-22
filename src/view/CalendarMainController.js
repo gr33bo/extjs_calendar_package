@@ -369,9 +369,15 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
     onEventSave: function(){
       var viewModel = this.getViewModel(),
           eventRecord = viewModel.getData()["theEvent"];
-  
-  
+
+     console.log(eventRecord.get("length"));
      eventRecord.commit();
+     console.log(eventRecord.get("length"));
+     
+     var monthView = this.lookupReference("monthPanel");
+     this.onMonthPanelResize(monthView);
+     
+     this.lookupReference("editEventWindow").close();
       console.log(eventRecord.data);
     }
 });

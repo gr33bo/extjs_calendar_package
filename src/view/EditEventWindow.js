@@ -20,10 +20,10 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
     resizable: false,
     width: 500,
     
-    padding: '10',
     items: [
       {
         xtype: 'form',
+        padding: '10',
          
         fieldDefaults: {
           labelAlign: 'top',
@@ -43,6 +43,7 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
           {
             xtype: 'fieldcontainer',
             layout: 'hbox',
+            margin: '0 0 0 0',
             items: [
               {
                 xtype: 'datetimefield',
@@ -68,18 +69,6 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
             layout: 'hbox',
             items: [
               {
-                xtype: 'checkbox',
-                boxLabel: 'All Day Event',
-                inputValue: true,
-                uncheckedValue: false,
-                bind: {
-                  value: '{theEvent.is_all_day}'
-                },
-                listeners: {
-                  change: 'onAllDayChange'
-                }
-              },
-              {
                 xtype: 'combobox',
                 fieldLabel: 'Calendar',
                 queryMode: 'local',
@@ -87,6 +76,7 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
                 valueField: 'id',
                 allowBlank: false,
                 cls: 'calendar-selector',
+                width: '45%',
                 bind: {
                   store: '{calendars}',
                   value: '{theEvent.calendar_id}'
@@ -106,6 +96,20 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
                   change: 'onEventCalendarChange'
                           
                 }
+              },
+              
+              {
+                xtype: 'checkbox',
+                boxLabel: 'All Day Event',
+                inputValue: true,
+                uncheckedValue: false,
+                bind: {
+                  value: '{theEvent.is_all_day}'
+                },
+                listeners: {
+                  change: 'onAllDayChange'
+                },
+                margin: '25 0 0 20'
               }
             ]
           }

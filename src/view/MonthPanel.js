@@ -291,7 +291,7 @@ Ext.define('CalendarPackage.view.MonthPanel', {
               if(Ext.Date.between(day["dayStart"], eventStart, eventEnd) || 
                   Ext.Date.between(day["dayEnd"], eventStart, eventEnd) ||
                    Ext.Date.between(eventStart, day["dayStart"], day["dayEnd"]) ||
-                 (eventStart < day["dayStart"] && eventEnd > day["dayEnd"])){
+                    (eventStart < day["dayStart"] && eventEnd > day["dayEnd"])){
                 matches = true;
               }
             }  
