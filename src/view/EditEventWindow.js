@@ -183,6 +183,9 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
           render: 'bindEventFormFields'
         }
       }
-    ]
+    ],
+    listeners: {
+      hide: 'onEventWindowHide'
+    }
     
 });

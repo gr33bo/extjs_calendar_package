@@ -111,6 +111,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       if(monthView){
         this.onMonthPanelResize(monthView);
       }
+      
     },
     eventsStoreFilterChange: function(store, records){
       var monthView = this.lookupReference("monthPanel");
@@ -395,6 +396,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
           eventsStore = viewModel.getStore("events");
   
       eventRecord.commit();
+      this.lookupReference("editEventWindow").hide();
     },
     
     onEventCreate: function(){
@@ -452,5 +454,14 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
         startDateField.setMaxValue(newVal);
       }
       
+    },
+    
+    onEventWindowHide: function(eventWindow){
+      var viewModel = this.getViewModel(),
+          eventRecord = viewModel.getData()["theEvent"];
+  
+      if(!eventRecord.phantom){
+        eventRecord.reject();
+      }
     }
 });

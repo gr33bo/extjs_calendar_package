@@ -1,9 +1,10 @@
 # extjs_calendar_package
 
-Todo: 
+To-Do: 
  - Week View
  - Day View
 
 To-Done!
  - Refactor event attributes
+   - Bind form values to event attributes
  - Finish event editing form
