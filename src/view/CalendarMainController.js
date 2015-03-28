@@ -427,7 +427,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       Ext.Msg.confirm("Confirm Deletion", "Do you wish to delete this event?", function(btn){
         if(btn == "yes"){
           eventsStore.remove(eventRecord);
-          eventsStore.sync();
+          //eventsStore.sync();
         }
       })
     },
