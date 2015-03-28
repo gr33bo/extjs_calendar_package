@@ -23,7 +23,6 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
     items: [
       {
         xtype: 'form',
-        padding: '10',
          
         fieldDefaults: {
           labelAlign: 'top',
@@ -34,107 +33,142 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
         },
         items: [
           {
-            xtype: 'textfield',
-            fieldLabel: 'Title',
-            bind: {
-              value: '{theEvent.title}'
-            }
-          },
-          {
-            xtype: 'fieldcontainer',
-            layout: 'hbox',
-            margin: '0 0 0 0',
-            items: [
-              {
-                xtype: 'datetimefield',
-                fieldLabel: "Start",
-                reference: 'startDateField',
-                bind: {
-                  value: '{theEvent.start_date}'
-                }
-              },
-              {
-                xtype: 'datetimefield',
-                fieldLabel: "End",
-                margin: '0 0 0 20',
-                reference: 'endDateField',
-                bind: {
-                  value: '{theEvent.end_date}'
-                }
-              }
-            ]
-          },
-          {
             xtype: 'container',
-            layout: 'hbox',
+            padding: 10,
             items: [
               {
-                xtype: 'combobox',
-                fieldLabel: 'Calendar',
-                queryMode: 'local',
-                displayField: 'name',
-                valueField: 'id',
-                allowBlank: false,
-                cls: 'calendar-selector',
-                width: '45%',
+                xtype: 'textfield',
+                fieldLabel: 'Title',
                 bind: {
-                  store: '{calendars}',
-                  value: '{theEvent.calendar_id}'
-                },
-                tpl: Ext.create('Ext.XTemplate',
-                    '<tpl for=".">',
-                        '<div class="x-boundlist-item"><span class="color-dot" style="background-color:{background_color};"></span> - {name}</div>',
-                    '</tpl>'
-                ),
-                listeners: {
-                  boxready: function(combobox){
-                    
-                     Ext.core.DomHelper.append(combobox.el.down('.x-form-text-wrap'), {
-                        tag: 'div', cls: 'calendar-dot'
-                    });
-                  },
-                  change: 'onEventCalendarChange'
-                          
+                  value: '{theEvent.title}'
                 }
               },
-              
               {
-                xtype: 'checkbox',
-                boxLabel: 'All Day Event',
-                inputValue: true,
-                uncheckedValue: false,
-                bind: {
-                  value: '{theEvent.is_all_day}'
-                },
-                listeners: {
-                  change: 'onAllDayChange'
-                },
-                margin: '25 0 0 20'
+                xtype: 'fieldcontainer',
+                layout: 'hbox',
+                margin: '0 0 0 0',
+                items: [
+                  {
+                    xtype: 'datetimefield',
+                    fieldLabel: "Start",
+                    reference: 'startDateField',
+                    itemId: "a",
+                    bind: {
+                      value: '{theEvent.start_date}'
+                    },
+                    listeners: {
+                      change: 'onStartDateChange'
+                    }
+                  },
+                  {
+                    xtype: 'datetimefield',
+                    fieldLabel: "End",
+                    margin: '0 0 0 20',
+                    reference: 'endDateField',
+                    bind: {
+                      value: '{theEvent.end_date}'
+                    },
+                    listeners: {
+                      change: 'onEndDateChange'
+                    }
+                  }
+                ]
+              },
+              {
+                xtype: 'container',
+                layout: 'hbox',
+                items: [
+                  {
+                    xtype: 'combobox',
+                    fieldLabel: 'Calendar',
+                    queryMode: 'local',
+                    displayField: 'name',
+                    valueField: 'id',
+                    allowBlank: false,
+                    cls: 'calendar-selector',
+                    width: '45%',
+                    bind: {
+                      store: '{calendars}',
+                      value: '{theEvent.calendar_id}'
+                    },
+                    tpl: Ext.create('Ext.XTemplate',
+                        '<tpl for=".">',
+                            '<div class="x-boundlist-item"><span class="color-dot" style="background-color:{background_color};"></span> - {name}</div>',
+                        '</tpl>'
+                    ),
+                    listeners: {
+                      boxready: function(combobox){
+
+                         Ext.core.DomHelper.append(combobox.el.down('.x-form-text-wrap'), {
+                            tag: 'div', cls: 'calendar-dot'
+                        });
+                      },
+                      change: 'onEventCalendarChange'
+
+                    }
+                  },
+
+                  {
+                    xtype: 'checkbox',
+                    boxLabel: 'All Day Event',
+                    inputValue: true,
+                    uncheckedValue: false,
+                    bind: {
+                      value: '{theEvent.is_all_day}'
+                    },
+                    listeners: {
+                      change: 'onAllDayChange'
+                    },
+                    margin: '25 0 0 20'
+                  }
+                ]
               }
             ]
           }
-        ]
-      }
-    ],
-    dockedItems: [
-      {
-        xtype: 'toolbar',
-        dock: 'bottom',
-        ui: 'footer', 
-        items: [
-          '->',
+          
+        ],
+        dockedItems: [
           {
-            text: 'Save',
-            formBind: true,
-            listeners: {
-              click: 'onEventSave'
-            },
-            bind: {
-//              hidden: '{creatingNewIncident}',
-//              disabled: '{!validIncidentForms}'
-            }
-          },
-          '->'
+            xtype: 'toolbar',
+            dock: 'bottom',
+            ui: 'footer', 
+            items: [
+              '->',
+              {
+                text: 'Save',
+                formBind: true,
+                listeners: {
+                  click: 'onEventSave'
+                },
+                bind: {
+                  hidden: '{createMode}'//,
+    //              disabled: '{!validIncidentForms}'
+                }
+              },
+              {
+                text: 'Create',
+                formBind: true,
+                listeners: {
+                  click: 'onEventCreate'
+                },
+                bind: {
+                  hidden: '{!createMode}'//,
+    //              disabled: '{!validIncidentForms}'
+                }
+              },
+              {
+                text: 'Cancel',
+                listeners: {
+                  click: 'onEventCancel'
+                },
+                bind: {
+    //              hidden: '{!createMode}'//,
+    //              disabled: '{!validIncidentForms}'
+                }
+              },
+              '->'
+            ]
+          }
         ]
       }
     ]

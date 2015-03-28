@@ -8,10 +8,13 @@ Ext.define('CalendarPackage.view.CalendarMainModel', {
     ], 
     
     data: {
-      startDateAttribute: "start_date",
-      endDateAttribute: "end_date",
-      titleAttribute: "title",
-      allDayAttribute: "is_all_day"
+      eventAttributes: {
+        startDate: "start_date",
+        endDate: "end_date",
+        title: "title",
+        allDay: "is_all_day"
+      },
+      createMode: false
     },
     stores: {
       calendars: {
@@ -97,8 +100,8 @@ Ext.define('CalendarPackage.view.CalendarMainModel', {
             {
               id: 3,
               title: "RAWR3",
-              start_date: "2015-05-06 16:00:00",
-              end_date: "2015-05-06 17:00:00",
+              start_date: "2015-05-05 16:00:00",
+              end_date: "2015-05-05 17:00:00",
               calendar_id: 3
             },
             {
@@ -126,23 +129,18 @@ Ext.define('CalendarPackage.view.CalendarMainModel', {
               calendar_id: 3
             }
           ],
-////          proxy: {
-////             type: 'rest',
-////             url: '/affiliations',
-////              reader: {
-////                  type: 'json',
-////                  rootProperty: 'rows',
-////                  totalProperty: 'total',
-////                  messageProperty: 'message',
-////                  successProperty: 'success'
-////              },
-////              writer: {
-////                  writeAllFields: false
-////              }
-////          }
+          proxy:{
+            type: 'memory',
+            reader: {
+              type: 'json'
+            }
+          },
           listeners: {
             load: 'eventsStoreLoaded',
-            filterchange: 'eventsStoreFilterChange'
+            filterchange: 'eventsStoreFilterChange'//,
+//            update: 'eventsStoreDataChanged',
+//            add: 'eventsStoreDataChanged',
+//            remove: 'eventsStoreDataChanged'
           }
       }
     }

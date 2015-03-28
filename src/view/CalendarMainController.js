@@ -41,7 +41,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       var newEvent = new CalendarPackage.model.Event({title:'new event', start_date: date});
       viewModel.setData({theEvent: newEvent});
       
-      
+      viewModel.setData({createMode:true});
       this.showEditEventWindow("New");
     },
     
@@ -53,16 +53,6 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
           eventWindow = Ext.create("CalendarPackage.view.EditEventWindow", {
             constrainTo: calendarContainer
           });
-          
-          
-//          var viewModelData = viewModel.getData(),
-//              eventAttributes = {};
-//
-//          eventAttributes["startDateAttribute"] = viewModelData["startDateAttribute"];
-//          eventAttributes["endDateAttribute"] = viewModelData["endDateAttribute"];
-//          eventAttributes["titleAttribute"] = viewModelData["titleAttribute"];
-//          eventAttributes["allDayAttribute"] = viewModelData["allDayAttribute"];
-//          eventWindow.eventAttributes = eventAttributes;
           
           calendarContainer.add(eventWindow);
       }
@@ -84,6 +74,12 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
         this.onMonthPanelResize(monthView);
       }
     },
+    eventsStoreDataChanged: function(store, records){
+      var monthView = this.lookupReference("monthPanel");
+      if(monthView){
+        this.onMonthPanelResize(monthView);
+      }
+    },
     eventsStoreFilterChange: function(store, records){
       var monthView = this.lookupReference("monthPanel");
       if(monthView){
@@ -97,6 +93,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       
       this.lookupReference("extraEventsWindow").hide();
       
+      viewModel.setData({createMode:false});
       this.showEditEventWindow("Edit");
     },
         
@@ -125,6 +122,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
         //show event form window
         viewModel.setData({theEvent: eventRecord});      
       
+        viewModel.setData({createMode:false});
         this.showEditEventWindow("Edit");
       } else if(moreClassTest.test(idClass)){
         
@@ -149,12 +147,8 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
           
           
           var viewModelData = viewModel.getData(),
-              eventAttributes = {};
-
-          eventAttributes["startDateAttribute"] = viewModelData["startDateAttribute"];
-          eventAttributes["endDateAttribute"] = viewModelData["endDateAttribute"];
-          eventAttributes["titleAttribute"] = viewModelData["titleAttribute"];
-          eventAttributes["allDayAttribute"] = viewModelData["allDayAttribute"];
+              eventAttributes = viewModelData["eventAttributes"];
+              
           extraEventsWindow.eventAttributes = eventAttributes;
           
           calendarContainer.add(extraEventsWindow);
@@ -270,12 +264,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
         var viewModel = this.getViewModel(),
             eventsStore = viewModel.getStore("events"),
             viewModelData = viewModel.getData(),
-            eventAttributes = {};
-    
-        eventAttributes["startDateAttribute"] = viewModelData["startDateAttribute"];
-        eventAttributes["endDateAttribute"] = viewModelData["endDateAttribute"];
-        eventAttributes["titleAttribute"] = viewModelData["titleAttribute"];
-        eventAttributes["allDayAttribute"] = viewModelData["allDayAttribute"];
+            eventAttributes = viewModelData["eventAttributes"];
         
         
         var viewModel = this.getViewModel(),
@@ -344,12 +333,14 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
     
     //TODO: These 2 methods need to go in controller for eventWindow
     onAllDayChange: function(checkbox){
+      var startDateField = this.lookupReference("startDateField");
+      var endDateField = this.lookupReference("endDateField");
       if(!checkbox.getValue()){
-        this.lookupReference("startDateField").showTimeField();
-        this.lookupReference("endDateField").showTimeField();
+        startDateField.showTimeField();
+        endDateField.showTimeField();
       } else {
-        this.lookupReference("startDateField").hideTimeField();
-        this.lookupReference("endDateField").hideTimeField();
+        startDateField.hideTimeField();
+        endDateField.hideTimeField();
       }
     },
     onEventCalendarChange: function(combobox){
@@ -367,17 +358,63 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
     },
     
     onEventSave: function(){
+      console.log("ON SAVE")
+      var viewModel = this.getViewModel(),
+          eventRecord = viewModel.getData()["theEvent"],
+          eventsStore = viewModel.getStore("events");
+
+//      eventsStore.commitChanges();
+//     console.log(eventRecord.get("length"));
+     eventRecord.commit();
+//     console.log(eventRecord.get("length"));
+//     
+//     var monthView = this.lookupReference("monthPanel");
+//     this.onMonthPanelResize(monthView);
+//     
+//     this.lookupReference("editEventWindow").close();
+//      console.log(eventRecord.data);
+    },
+    
+    onEventCreate: function(){
+      var viewModel = this.getViewModel(),
+          eventRecord = viewModel.getData()["theEvent"],
+          eventsStore = viewModel.getStore("events");
+  console.log(eventRecord);
+      eventsStore.add(eventRecord);
+      
+          
+    },
+    
+    onEventCancel: function(){
       var viewModel = this.getViewModel(),
           eventRecord = viewModel.getData()["theEvent"];
-
-     console.log(eventRecord.get("length"));
-     eventRecord.commit();
-     console.log(eventRecord.get("length"));
      
-     var monthView = this.lookupReference("monthPanel");
-     this.onMonthPanelResize(monthView);
+     eventRecord.reject();
      
      this.lookupReference("editEventWindow").close();
-      console.log(eventRecord.data);
+    },
+    
+    onStartDateChange: function(startDateField, newVal){
+      var viewModel = this.getViewModel(),
+          viewModelData = viewModel.getData(),
+          eventRecord = viewModelData["theEvent"],
+          eventAttributes = viewModelData["eventAttributes"],
+          endDateField = this.lookupReference("endDateField");
+      if(newVal){
+        endDateField.setMinValue(newVal);
+      }
+    },
+    
+    onEndDateChange: function(endDateField, newVal){
+      var viewModel = this.getViewModel(),
+          viewModelData = viewModel.getData(),
+          eventRecord = viewModelData["theEvent"],
+          eventAttributes = viewModelData["eventAttributes"],
+          startDateField = this.lookupReference("startDateField");
+  
+      if(newVal){
+        startDateField.setMaxValue(newVal);
+      }
+      
     }
 });

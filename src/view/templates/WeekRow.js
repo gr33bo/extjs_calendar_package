@@ -98,7 +98,7 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
         },
         getInlineStyle: function(values, dayValues){
 
-          if(values[this.eventAttributes["allDayAttribute"]]){          
+          if(values[this.eventAttributes["allDay"]]){          
             if(values.background_color){
               return "style='background: "+values.background_color+";'";
             } else {
@@ -126,36 +126,36 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
             return "";
           }
           
-          var eventStartDate = values[this.eventAttributes["startDateAttribute"]];
+          var eventStartDate = values[this.eventAttributes["startDate"]];
           var dayStart = dayValues["dayStart"];
           
-          if(values[this.eventAttributes["allDayAttribute"]]) {
+          if(values[this.eventAttributes["allDay"]]) {
             this.titleIds.push(values.id);
-            return values[this.eventAttributes["titleAttribute"]];
+            return values[this.eventAttributes["title"]];
           } else {
             this.titleIds.push(values.id);
-            var startDate = values[this.eventAttributes["startDateAttribute"]];
+            var startDate = values[this.eventAttributes["startDate"]];
 
             var startTime = Ext.Date.format(startDate, 'g:i a');
 
-            return startTime + ' ' + values[this.eventAttributes["titleAttribute"]];
+            return startTime + ' ' + values[this.eventAttributes["title"]];
           }
           
         },
         getStart: function(eventValues){
-           var eventStartDate = eventValues[this.eventAttributes["startDateAttribute"]];
+           var eventStartDate = eventValues[this.eventAttributes["startDate"]];
            
            return Ext.Date.format(eventStartDate, 'Y-m-d');
         },
         getClasses: function(eventValues, dayValues){
           var classes = ["event-cell-"+eventValues.id, "event-cell"];
           
-          var eventStartDate = eventValues[this.eventAttributes["startDateAttribute"]];
-          var eventEndDate = eventValues[this.eventAttributes["endDateAttribute"]];
+          var eventStartDate = eventValues[this.eventAttributes["startDate"]];
+          var eventEndDate = eventValues[this.eventAttributes["endDate"]];
           var dayStart = dayValues["dayStart"];
           var dayEnd = Ext.clone(dayValues["dayEnd"]);
           
-          if(eventValues[this.eventAttributes["allDayAttribute"]]){
+          if(eventValues[this.eventAttributes["allDay"]]){
             classes.push("all-day-cell");
           } else if(Ext.Date.format(eventStartDate, 'Y-m-d') != Ext.Date.format(eventEndDate, 'Y-m-d')) {
             classes.push("multi-day-cell");

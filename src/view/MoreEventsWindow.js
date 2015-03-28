@@ -31,7 +31,7 @@ Ext.define('CalendarPackage.view.MoreEventsWindow', {
             '</tpl>',
             {
               getInlineStyle: function(values){
-                if(values[this.eventAttributes["allDayAttribute"]]){        
+                if(values[this.eventAttributes["allDay"]]){        
                   if(values.background_color){
                     return "style='background: "+values.background_color+";'";
                   } else {
@@ -54,12 +54,12 @@ Ext.define('CalendarPackage.view.MoreEventsWindow', {
               getClasses: function(eventValues){
                 var classes = ["event-cell-"+eventValues.id, "event-cell"];
 
-                var eventStartDate = eventValues[this.eventAttributes["startDateAttribute"]];
-                var eventEndDate = eventValues[this.eventAttributes["endDateAttribute"]];
+                var eventStartDate = eventValues[this.eventAttributes["startDate"]];
+                var eventEndDate = eventValues[this.eventAttributes["endDate"]];
                 var extraEventsDate = this.extraEventsDate;
 
                 var checkStartEnd = false;
-                if(eventValues[this.eventAttributes["allDayAttribute"]]){
+                if(eventValues[this.eventAttributes["allDay"]]){
                   classes.push("all-day-cell");
                   checkStartEnd = true;
                 } else if(Ext.Date.format(eventStartDate, 'Y-m-d') != Ext.Date.format(eventEndDate, 'Y-m-d')) {
@@ -80,10 +80,10 @@ Ext.define('CalendarPackage.view.MoreEventsWindow', {
                 return classes.join(" ");
               },
               getTitle: function(values){
-                var eventStartDate = values[this.eventAttributes["startDateAttribute"]];
-                var title = values[this.eventAttributes["titleAttribute"]];
+                var eventStartDate = values[this.eventAttributes["startDate"]];
+                var title = values[this.eventAttributes["title"]];
                 
-                var allDay = values[this.eventAttributes["allDayAttribute"]];
+                var allDay = values[this.eventAttributes["allDay"]];
                 
                 if(!allDay) {
                   var startTime = Ext.Date.format(eventStartDate, 'g:i a');

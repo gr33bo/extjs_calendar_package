@@ -19,19 +19,29 @@ Ext.define('Ext.ux.form.DateTimeField', {
     
     allowBlank: true,
     
-    minDate: null,
+    //min and max values are used for the combined fields
+    minValue: null,
     
-    maxDate: null,
+    maxValue: null,
     
-    minTime: null,
+    //Range values are used to set max a min ranges for the individual fields
+    minDateRange: null,
     
-    maxTime: null,
+    maxDateRange: null,
+    
+    minTimeRange: null,
+    
+    maxTimeRange: null,
     
     dateFieldWidth: 100,
     
     timeFieldWidth: 100,
     
     visibleTimeField: true,
+    
+    timeOut: null,
+    
+    validateDateOnly: false,
     
     layout: {
       type: 'hbox'
@@ -67,8 +77,8 @@ Ext.define('Ext.ux.form.DateTimeField', {
       var cfg = {
             xtype: 'datefield',
             format: this.dateFormat,
-            maxValue: this.maxDate,
-            minValue: this.minDate,
+            maxValue: this.maxDateRange,
+            minValue: this.minDateRange,
             allowBlank: this.allowBlank,
             hideLabel: true,
             width: this.dateFieldWidth,
@@ -97,8 +107,8 @@ Ext.define('Ext.ux.form.DateTimeField', {
             format: this.timeFormat,
             allowBlank: this.allowBlank,
             increment: this.timeIncrement,
-            maxValue: this.maxTime,
-            minValue: this.minTime,
+            maxValue: this.maxTimeRange,
+            minValue: this.minTimeRange,
             listeners: {
                 'change': {
                     fn: function(){
@@ -136,11 +146,13 @@ Ext.define('Ext.ux.form.DateTimeField', {
     hideTimeField: function(){
       this.timeField.hide();
       this.timeField.disable();
+      this.validateDateOnly = true;
     },
     
     showTimeField: function(){
       this.timeField.enable();
       this.timeField.show();
+      this.validateDateOnly = false;
     },
     
     getValue: function(){
@@ -176,9 +188,130 @@ Ext.define('Ext.ux.form.DateTimeField', {
     },
     
     onFieldChange: function(){
-      console.log(this.getValue())
-      this.fireEvent('change', this, this.getValue());
+      
+      //100ms delay mostly accounts for the initial settings of date and time,
+      //as both fields fire change events
+      if(this.timeOut){
+        clearTimeout(this.timeOut);
+      }
+      
+      this.timeOut = Ext.defer(function(field){
+        this.fireEvent('change', this, this.getValue());
 
-      this.publishState('value', this.getValue());
+        this.publishState('value', this.getValue());
+        
+        this.validate();
+      }, 100, this);
+    },
+    
+    setMinValue: function(val){
+      this.minValue = Ext.clone(val);
+      this.validate();
+    },
+    
+    setMaxValue: function(val){
+      this.maxValue = Ext.clone(val);
+      this.validate();
+    },
+    
+    getErrors: function(){
+      var errors = [];
+      
+      if(this.minValue && this.getValue()){     
+        if(this.getValue() < this.minValue){
+          if(this.validateDateOnly){
+              errors.push("Must be greater than "+Ext.Date.format(this.minValue, this.dateFormat));
+          } else {      
+            errors.push("Must be greater than "+Ext.Date.format(this.minValue, this.dateFormat + " " + this.timeFormat));
+          }
+        }
+      }
+      
+      if(this.maxValue && this.getValue()){        
+        if(this.getValue() > this.maxValue){
+          if(this.validateDateOnly){
+              errors.push("Must be less than "+Ext.Date.format(this.maxValue, this.dateFormat));
+          } else {      
+            errors.push("Must be less than "+Ext.Date.format(this.maxValue, this.dateFormat + " " + this.timeFormat));
+          }
+        }
+      }
+      
+      
+      return errors;
+    },
+    isValid: function() {
+      var me = this,
+          disabled = me.disabled,
+          validate = me.forceValidation || !disabled;
+            
+        return validate ? me.validateValue(me.getValue()) : disabled;
+    },
+    validate : function() {
+        var me = this,
+            isValid = me.isValid();
+        if (isValid !== me.wasValid) {
+            me.wasValid = isValid;
+            me.fireEvent('validitychange', me, isValid);
+        }
+        return isValid;
+    },
+    validateValue: function(value) {
+      var me = this,
+          errors = me.getErrors(value),
+          isValid = Ext.isEmpty(errors);
+  
+      if (isValid) {
+        me.clearInvalid();
+      } else {
+        me.markInvalid(errors);
+      }
+      return isValid;
+    },
+//
+    markInvalid: function(errors){ 
+        // Save the message and fire the 'invalid' event
+        var me = this,
+            oldMsg = me.getActiveError(),
+            active;
+            
+        me.setActiveErrors(Ext.Array.from(errors));
+        active = me.getActiveError();
+        if (oldMsg !== active) {
+            me.setError(active);
+        }
+    },
+    clearInvalid: function(){ 
+      var me = this,
+            hadError = me.hasActiveError();
+            
+        delete me.needsValidateOnEnable;
+        me.unsetActiveError();
+        if (hadError) {
+            me.setError('');
+        }
+    },
+    setError: function(error){
+      var me = this,
+          msgTarget = me.msgTarget,
+          prop;
+
+      if (me.rendered) {
+          if (msgTarget == 'title' || msgTarget == 'qtip') {
+              prop = msgTarget == 'qtip' ? 'data-errorqtip' : 'title';
+              me.getActionEl().dom.setAttribute(prop, error || '');
+          } else {
+              me.updateLayout();
+          }
+      }
+    },
+    
+    toggleInvalidCls: function(hasError) {        
+        this.timeField.toggleInvalidCls(hasError);
+        this.dateField.toggleInvalidCls(hasError);
+    },
+    
+    setValidateDateOnly: function(validateDateOnly){
+      this.validateDateOnly = validateDateOnly;
     }
 });

@@ -261,8 +261,8 @@ Ext.define('CalendarPackage.view.MonthPanel', {
 
       eventsStore.each(function(eventRecord){
         
-        var eventStart = eventRecord.get(eventAttributes["startDateAttribute"]);
-        var eventEnd = eventRecord.get(eventAttributes["endDateAttribute"]);
+        var eventStart = eventRecord.get(eventAttributes["startDate"]);
+        var eventEnd = eventRecord.get(eventAttributes["endDate"]);
         
         //for each eventRecord
         //figure out the week it belongs in
