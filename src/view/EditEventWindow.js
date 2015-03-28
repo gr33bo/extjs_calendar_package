@@ -23,6 +23,7 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
     items: [
       {
         xtype: 'form',
+        reference: 'editEventForm',
          
         fieldDefaults: {
           labelAlign: 'top',
@@ -39,8 +40,9 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
               {
                 xtype: 'textfield',
                 fieldLabel: 'Title',
+                itemId: "titleField",
                 bind: {
-                  value: '{theEvent.title}'
+//                  value: '{theEvent.title}'
                 }
               },
               {
@@ -52,9 +54,9 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
                     xtype: 'datetimefield',
                     fieldLabel: "Start",
                     reference: 'startDateField',
-                    itemId: "a",
+                    itemId: "startDateField",
                     bind: {
-                      value: '{theEvent.start_date}'
+//                      value: '{theEvent.start_date}'
                     },
                     listeners: {
                       change: 'onStartDateChange'
@@ -64,9 +66,10 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
                     xtype: 'datetimefield',
                     fieldLabel: "End",
                     margin: '0 0 0 20',
-                    reference: 'endDateField',
+                    reference: "endDateField",
+                    itemId: "endDateField",
                     bind: {
-                      value: '{theEvent.end_date}'
+//                      value: '{theEvent.end_date}'
                     },
                     listeners: {
                       change: 'onEndDateChange'
@@ -87,9 +90,10 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
                     allowBlank: false,
                     cls: 'calendar-selector',
                     width: '45%',
+                    itemId: "calendarIdField",
                     bind: {
-                      store: '{calendars}',
-                      value: '{theEvent.calendar_id}'
+                      store: '{calendars}'//,
+//                      value: '{theEvent.calendar_id}'
                     },
                     tpl: Ext.create('Ext.XTemplate',
                         '<tpl for=".">',
@@ -113,8 +117,9 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
                     boxLabel: 'All Day Event',
                     inputValue: true,
                     uncheckedValue: false,
+                    itemId: "isAllDayField",
                     bind: {
-                      value: '{theEvent.is_all_day}'
+//                      value: '{theEvent.is_all_day}'
                     },
                     listeners: {
                       change: 'onAllDayChange'
@@ -173,7 +178,10 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
               '->'
             ]
           }
-        ]
+        ],
+        listeners: {
+          render: 'bindEventFormFields'
+        }
       }
     ]
     

@@ -12,7 +12,8 @@ Ext.define('CalendarPackage.view.CalendarMainModel', {
         startDate: "start_date",
         endDate: "end_date",
         title: "title",
-        allDay: "is_all_day"
+        allDay: "is_all_day",
+        calendarId: "calendar_id"
       },
       createMode: false
     },

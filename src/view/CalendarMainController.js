@@ -10,6 +10,24 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
 
     alias: 'controller.calendarmaincontroller',
     
+    bindEventFormFields: function(){
+      var formPanel = this.lookupReference("editEventForm"),
+          titleField = formPanel.down("#titleField"),
+          startDateField = formPanel.down("#startDateField"),
+          endDateField = formPanel.down("#endDateField"),
+          calendarIdField = formPanel.down("#calendarIdField"),
+          isAllDayField = formPanel.down("#isAllDayField");
+  
+      var viewModel = this.getViewModel(),
+          eventAttributes = viewModel.getData()["eventAttributes"];
+  
+      titleField.setBind({value: '{theEvent.'+eventAttributes["title"]+'}'});
+      startDateField.setBind({value: '{theEvent.'+eventAttributes["startDate"]+'}'});
+      endDateField.setBind({value: '{theEvent.'+eventAttributes["endDate"]+'}'});
+      calendarIdField.setBind({value: '{theEvent.'+eventAttributes["calendarId"]+'}'});
+      isAllDayField.setBind({value: '{theEvent.'+eventAttributes["allDay"]+'}'});
+    },
+    
     onDayCellClick: function(event, htmlTarget){
       var htmlElem = Ext.get(htmlTarget);
       if(!htmlElem.hasCls("week-day")){
