@@ -137,10 +137,10 @@ Ext.define('CalendarPackage.view.CalendarMainModel', {
           },
           listeners: {
             load: 'eventsStoreLoaded',
-            filterchange: 'eventsStoreFilterChange'//,
-//            update: 'eventsStoreDataChanged',
-//            add: 'eventsStoreDataChanged',
-//            remove: 'eventsStoreDataChanged'
+            filterchange: 'eventsStoreFilterChange',
+            update: 'eventsStoreDataChanged',
+            add: 'eventsStoreDataAdded',
+            remove: 'eventsStoreDataRemoved'
           }
       }
     }

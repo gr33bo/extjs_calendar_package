@@ -152,18 +152,22 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
                   click: 'onEventCreate'
                 },
                 bind: {
-                  hidden: '{!createMode}'//,
-    //              disabled: '{!validIncidentForms}'
+                  hidden: '{!createMode}'
                 }
               },
               {
                 text: 'Cancel',
                 listeners: {
                   click: 'onEventCancel'
+                }
+              },
+              {
+                text: 'Delete Event',
+                listeners: {
+                  click: 'onEventDelete'
                 },
                 bind: {
-    //              hidden: '{!createMode}'//,
-    //              disabled: '{!validIncidentForms}'
+                  hidden: '{createMode}'
                 }
               },
               '->'

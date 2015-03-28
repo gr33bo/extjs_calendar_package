@@ -458,6 +458,7 @@ Ext.define('CalendarPackage.view.MonthPanel', {
           
           var dayEnd = Ext.clone(myDate);
           dayEnd.setDate(myDate.getDate()+1);
+          dayEnd.setSeconds(dayEnd.getSeconds()-1);
           
           dayObj["weekStart"] = i == 0;
           dayObj["dayStart"] = myDate;

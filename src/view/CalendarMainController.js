@@ -37,8 +37,10 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
     
     newEvent: function(date){
       var viewModel = this.getViewModel();
+      var endDate = Ext.clone(date);
+      endDate.setHours(endDate.getHours()+1);
       
-      var newEvent = new CalendarPackage.model.Event({title:'new event', start_date: date});
+      var newEvent = new CalendarPackage.model.Event({title:'new event', start_date: date, end_date: endDate});
       viewModel.setData({theEvent: newEvent});
       
       viewModel.setData({createMode:true});
@@ -69,6 +71,18 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       this.onMonthPanelResize(monthView);  
     },
     eventsStoreLoaded: function(store, records){
+      var monthView = this.lookupReference("monthPanel");
+      if(monthView){
+        this.onMonthPanelResize(monthView);
+      }
+    },
+    eventsStoreDataAdded: function(store, records){
+      records[0].commit();
+      this.lookupReference("editEventWindow").hide();
+    },
+    eventsStoreDataRemoved: function(store, records){
+      this.lookupReference("editEventWindow").hide();
+      
       var monthView = this.lookupReference("monthPanel");
       if(monthView){
         this.onMonthPanelResize(monthView);
@@ -116,7 +130,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
       
       
       if(idClassTest.test(idClass)){
-        var eventId = parseInt(idClass.replace("event-cell-", ""));
+        var eventId = idClass.replace("event-cell-", "");
         var eventRecord = eventStore.getById(eventId);
         
         //show event form window
@@ -358,40 +372,44 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
     },
     
     onEventSave: function(){
-      console.log("ON SAVE")
       var viewModel = this.getViewModel(),
           eventRecord = viewModel.getData()["theEvent"],
           eventsStore = viewModel.getStore("events");
-
-//      eventsStore.commitChanges();
-//     console.log(eventRecord.get("length"));
-     eventRecord.commit();
-//     console.log(eventRecord.get("length"));
-//     
-//     var monthView = this.lookupReference("monthPanel");
-//     this.onMonthPanelResize(monthView);
-//     
-//     this.lookupReference("editEventWindow").close();
-//      console.log(eventRecord.data);
+  
+      eventRecord.commit();
     },
     
     onEventCreate: function(){
       var viewModel = this.getViewModel(),
           eventRecord = viewModel.getData()["theEvent"],
           eventsStore = viewModel.getStore("events");
-  console.log(eventRecord);
+  
       eventsStore.add(eventRecord);
       
-          
+      eventsStore.sync();
     },
     
     onEventCancel: function(){
       var viewModel = this.getViewModel(),
           eventRecord = viewModel.getData()["theEvent"];
      
-     eventRecord.reject();
+      eventRecord.reject();
      
-     this.lookupReference("editEventWindow").close();
+      this.lookupReference("editEventWindow").hide();
+    },
+    
+    onEventDelete: function(){      
+      var viewModel = this.getViewModel(),
+          eventRecord = viewModel.getData()["theEvent"],
+          eventsStore = viewModel.getStore("events");
+  
+  
+      Ext.Msg.confirm("Confirm Deletion", "Do you wish to delete this event?", function(btn){
+        if(btn == "yes"){
+          eventsStore.remove(eventRecord);
+          eventsStore.sync();
+        }
+      })
     },
     
     onStartDateChange: function(startDateField, newVal){
