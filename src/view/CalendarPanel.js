@@ -23,20 +23,20 @@ Ext.define('CalendarPackage.view.CalendarPanel', {
           click: 'changeView'
         }
       },
-      {
-        text: "Day",
-        itemId: "dayViewButton",
-        listeners: { 
-          click: 'changeView'
-        }
-      },
-      {
-        text: "Week",
-        itemId: "weekViewButton",
-        listeners: { 
-          click: 'changeView'
-        }
-      },
+//      {
+//        text: "Day",
+//        itemId: "dayViewButton",
+//        listeners: { 
+//          click: 'changeView'
+//        }
+//      },
+//      {
+//        text: "Week",
+//        itemId: "weekViewButton",
+//        listeners: { 
+//          click: 'changeView'
+//        }
+//      },
       {
         text: "Month",
         itemId: "monthViewButton",
