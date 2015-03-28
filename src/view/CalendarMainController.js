@@ -305,7 +305,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
         
         eventsStore.each(function(eventRecord){
         
-          if(eventRecord.get("calendar_id")){
+          if(eventRecord && eventRecord.get("calendar_id") && calendarStore.getTotalCount() > 0){
             var calendarRecord = calendarStore.getById(eventRecord.get("calendar_id"));
             eventRecord.set("background_color", calendarRecord.get("background_color"));
           }
@@ -406,7 +406,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
   
       eventsStore.add(eventRecord);
       
-      eventsStore.sync();
+//      eventsStore.sync();
     },
     
     onEventCancel: function(){

@@ -107,7 +107,6 @@ Ext.define('CalendarPackage.view.MonthPanel', {
       today.setDate(15);
   
       me.value = clearTime(today);
-      me.value = clearTime(new Date(2015, 4, 15));
       
       me.selectedValue = Ext.clone(me.value);
       
@@ -201,8 +200,6 @@ Ext.define('CalendarPackage.view.MonthPanel', {
             cell.firstChild.dateValue = value;
             if (value == today) {
                 cls += ' ' + me.todayCls;
-            } else if(value == selectedValue){
-              cls += ' ' + me.selectedDayCls;
             }
             
             if(cls){
