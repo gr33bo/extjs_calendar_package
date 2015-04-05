@@ -1,5 +1,9 @@
 Ext.define('CalendarPackage.model.Event', {
-    extend: 'CalendarPackage.model.Base',
+    extend: 'Ext.data.Model',
+
+    requires: [
+      'Ext.data.Model'
+    ],
     fields: [
         { name: 'title',                    type: 'string'},
         { name: 'start_date',               type: 'date', dateFormat: 'Y-m-d H:i:s' },

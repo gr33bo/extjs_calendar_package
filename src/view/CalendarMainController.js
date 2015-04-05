@@ -54,20 +54,25 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
     },
     
     newEvent: function(date){
-      var viewModel = this.getViewModel();
+      var viewModel = this.getViewModel(),
+          eventStore = viewModel.getStore("events");;
       var endDate = Ext.clone(date);
       endDate.setHours(endDate.getHours()+1);
       
-      var newEvent = new CalendarPackage.model.Event({title:'new event', start_date: date, end_date: endDate});
+      var newEvent = eval("new "+viewModel.getData()["eventModel"]+"({title:'new event', start_date: date, end_date: endDate})");//new CalendarPackage.model.Event({title:'new event', start_date: date, end_date: endDate});
+      
+      eventStore.insert(0, newEvent);
+      
       viewModel.setData({theEvent: newEvent});
       
       viewModel.setData({createMode:true});
       this.showEditEventWindow("New");
     },
-    
     showEditEventWindow: function(newOrEdit){
-      var eventWindow = this.lookupReference("editEventWindow"),
-          calendarContainer = this.lookupReference("calendarContainerPanel");
+      var viewModel = this.getViewModel(),
+          calendarAttributes = viewModel.getData()["calendarAttributes"],
+          eventWindow = this.lookupReference("editEventWindow"),
+          calendarContainer = this.getView().down("calendarpanel");
   
       if(!eventWindow){
           eventWindow = Ext.create("CalendarPackage.view.EditEventWindow", {
@@ -75,6 +80,9 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
           });
           
           calendarContainer.add(eventWindow);
+          
+          eventWindow.down("calendarcombo").setCalendarAttributes(calendarAttributes);
+          
       }
       
       eventWindow.setTitle(newOrEdit+" Event");
@@ -90,13 +98,14 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
     },
     eventsStoreLoaded: function(store, records){
       var monthView = this.lookupReference("monthPanel");
+
       if(monthView){
-        this.onMonthPanelResize(monthView);
+        this.onMonthPanelResize(monthView, true);
       }
     },
     eventsStoreDataAdded: function(store, records){
-      records[0].commit();
-      this.lookupReference("editEventWindow").hide();
+//      records[0].commit();
+//      this.lookupReference("editEventWindow").hide();
     },
     eventsStoreDataRemoved: function(store, records){
       this.lookupReference("editEventWindow").hide();
@@ -271,33 +280,47 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
           calendarsStore = viewModel.getStore("calendars");
   
       if(calendarsStore.data.items.length > 0){
-        var checkboxes = [];
-       
-        calendarsStore.each(function(calendarRecord){
-          var checkboxObj = {
-            boxLabel: calendarRecord.get('name'),
-            inputValue: calendarRecord.get('id'),
-            checked: true
-          };
-          var backgroundColor = calendarRecord.get("background_color")
-          if(backgroundColor && backgroundColor.trim() != ""){
-            checkboxObj.style = "color: "+calendarRecord.get("background_color")+";";
-          }
-          checkboxes.push(checkboxObj);
-        });
-        this.lookupReference("calendarSelectionCheckboxes").add(checkboxes);
-        this.lookupReference("calendarSelectionPanel").show();
-        //load events store for calendars
-      } else {
-        //load events store, no calendar filter
+        this.addCalendars();
       }
     },
-    onMonthPanelResize: function(monthView){
+    
+    addCalendars: function(){
+      var viewModel = this.getViewModel(),
+          calendarsStore = viewModel.getStore("calendars"),
+          calendarAttributes = viewModel.getData()["calendarAttributes"];
+      var checkboxes = [];
+      var calendarIds = [];
+      
+      calendarsStore.each(function(calendarRecord){
+        var checkboxObj = {
+          boxLabel: calendarRecord.get(calendarAttributes["name"]),
+          inputValue: calendarRecord.get('id'),
+          checked: true
+        };
+        var backgroundColor = calendarRecord.get(calendarAttributes["backgroundColor"]);
+        if(backgroundColor && backgroundColor.trim() != ""){
+          checkboxObj.style = "color: "+calendarRecord.get(calendarAttributes["backgroundColor"])+";";
+        }
+        checkboxes.push(checkboxObj);
+        calendarIds.push(calendarRecord.get("id"));
+      });
+      
+      var selectionCheckboxes = this.lookupReference("calendarSelectionCheckboxes");
+      
+      selectionCheckboxes.add(checkboxes);
+      
+      selectionCheckboxes.setValue({"calendar_ids[]": calendarIds});
+      
+      this.lookupReference("calendarSelectionPanel").show();
+    },
+    
+    onMonthPanelResize: function(monthView, storeLoad){
       if(monthView){
         var viewModel = this.getViewModel(),
             eventsStore = viewModel.getStore("events"),
             viewModelData = viewModel.getData(),
-            eventAttributes = viewModelData["eventAttributes"];
+            eventAttributes = viewModelData["eventAttributes"],
+            calendarAttributes = viewModelData["calendarAttributes"];
         
         
         var viewModel = this.getViewModel(),
@@ -307,7 +330,11 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
         
           if(eventRecord && eventRecord.get("calendar_id") && calendarStore.getTotalCount() > 0){
             var calendarRecord = calendarStore.getById(eventRecord.get("calendar_id"));
-            eventRecord.set("background_color", calendarRecord.get("background_color"));
+            eventRecord.set(eventAttributes["backgroundColor"], calendarRecord.get(calendarAttributes["backgroundColor"]));
+            
+            if(storeLoad){
+              eventRecord.commit();
+            }
           }
         });
         
@@ -328,6 +355,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
           eventsStore = viewModel.getStore("events");
   
       eventsStore.clearFilter();
+      
       eventsStore.filterBy(function(record){
         if(calendarIds){
           return calendarIds.indexOf(record.get("calendar_id")) != -1;          
@@ -378,23 +406,24 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
     },
     onEventCalendarChange: function(combobox){
       var viewModel = this.getViewModel(),
-          calendarStore = viewModel.getStore("calendars");
+          calendarStore = viewModel.getStore("calendars"),          
+          calendarAttributes = viewModel.getData()["calendarAttributes"];
   
       var calendarRecord = calendarStore.getById(combobox.getValue());
       
       var dot = combobox.el.down(".calendar-dot");
       if(calendarRecord){
-        dot.dom.style.backgroundColor = calendarRecord.get("background_color");
+        dot.dom.style.backgroundColor = calendarRecord.get(calendarAttributes["backgroundColor"]);
       } else {
         dot.dom.style.backgroundColor = "transparent";
       }
     },
     
-    onEventSave: function(){
+    onEventSave: function(){ 
       var viewModel = this.getViewModel(),
           eventRecord = viewModel.getData()["theEvent"],
           eventsStore = viewModel.getStore("events");
-  
+          
       eventRecord.commit();
       this.lookupReference("editEventWindow").hide();
     },
@@ -414,7 +443,7 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
           eventRecord = viewModel.getData()["theEvent"];
      
       eventRecord.reject();
-     
+      
       this.lookupReference("editEventWindow").hide();
     },
     

@@ -1,5 +1,9 @@
 Ext.define('CalendarPackage.model.Calendar', {
-    extend: 'CalendarPackage.model.Base',
+    extend: 'Ext.data.Model',
+
+    requires: [
+      'Ext.data.Model'
+    ],
     fields: [
 //        { name: 'id',                       type: 'integer', useNull: true},
         { name: 'name',                    type: 'string'},

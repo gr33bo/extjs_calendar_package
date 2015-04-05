@@ -100,19 +100,19 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
 
           if(values[this.eventAttributes["allDay"]]){          
             if(values.background_color){
-              return "style='background: "+values.background_color+";'";
+              return "style='background: "+values[this.eventAttributes["backgroundColor"]]+";'";
             } else {
               return "style='background: #306da6;'";
             }
           } else if(values.length > 60*60*24*1000) {      
             if(values.background_color){
-              return "style='background: "+values.background_color+";'";
+              return "style='background: "+values[this.eventAttributes["backgroundColor"]]+";'";
             } else {
               return "style='background: #86a723;'";
             }
           } else {
             if(values.background_color){
-              return "style='color: "+values.background_color+";'";
+              return "style='color: "+values[this.eventAttributes["backgroundColor"]]+";'";
             } else {
               return '';
             }
@@ -135,7 +135,7 @@ Ext.define('CalendarPackage.view.templates.WeekRow', {
           } else {
             this.titleIds.push(values.id);
             var startDate = values[this.eventAttributes["startDate"]];
-
+            
             var startTime = Ext.Date.format(startDate, 'g:i a');
 
             return startTime + ' ' + values[this.eventAttributes["title"]];

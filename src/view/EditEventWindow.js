@@ -2,7 +2,8 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
     extend: 'Ext.window.Window',
     alias: ['widget.editeventwindow'],
     
-    requires: [
+    requires: [,
+      "CalendarPackage.view.CalendarCombo",
       "Ext.form.Panel",
       'Ext.ux.form.DateTimeField'
     ],
@@ -13,7 +14,7 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
     scrollable: "vertical",
     
     closable: true,
-    closeAction: 'hide',
+    closeAction: 'hide', 
     constrain: true,
     
     draggable: false,
@@ -82,7 +83,7 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
                 layout: 'hbox',
                 items: [
                   {
-                    xtype: 'combobox',
+                    xtype: 'calendarcombo',
                     fieldLabel: 'Calendar',
                     queryMode: 'local',
                     displayField: 'name',
@@ -102,13 +103,11 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
                     ),
                     listeners: {
                       boxready: function(combobox){
-
                          Ext.core.DomHelper.append(combobox.el.down('.x-form-text-wrap'), {
                             tag: 'div', cls: 'calendar-dot'
                         });
                       },
                       change: 'onEventCalendarChange'
-
                     }
                   },
 

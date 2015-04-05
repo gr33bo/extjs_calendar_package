@@ -72,5 +72,5 @@ Ext.define('CalendarPackage.view.CalendarPanel', {
         xtype: 'panel',
         html: 'Day'
       }
-    ],
+    ]
 }); 

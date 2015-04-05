@@ -13,13 +13,23 @@ Ext.define('CalendarPackage.view.CalendarMainModel', {
         endDate: "end_date",
         title: "title",
         allDay: "is_all_day",
-        calendarId: "calendar_id"
+        calendarId: "calendar_id",
+        backgroundColor: "background_color"
       },
+      
+      calendarAttributes: {
+        name: "name",
+        backgroundColor: "background_color"
+      },      
+      
+      eventModel: "CalendarPackage.model.Event",
+      calendarModel: "CalendarPackage.model.Calendar",
+      
       createMode: false
     },
     stores: {
       calendars: {
-        model: 'Calendar',
+        model: 'CalendarPackage.model.Calendar',
         autoLoad: false,
         autoSync: false,
         remoteFilter: false,
@@ -50,7 +60,7 @@ Ext.define('CalendarPackage.view.CalendarMainModel', {
         
       },
       extra_events: {
-        model: 'Event',
+        model: 'CalendarPackage.model.Event',
         autoLoad: false,
         autoSync: false,
         remoteFilter: false,
@@ -67,7 +77,7 @@ Ext.define('CalendarPackage.view.CalendarMainModel', {
         ]
       },
       events: {
-          model: 'Event',
+          model: 'CalendarPackage.model.Event',
           autoLoad: false,
           autoSync: false,
           remoteFilter: false,
