@@ -440,9 +440,14 @@ Ext.define('CalendarPackage.view.CalendarMainController', {
     
     onEventCancel: function(){
       var viewModel = this.getViewModel(),
-          eventRecord = viewModel.getData()["theEvent"];
+          eventRecord = viewModel.getData()["theEvent"],
+          eventsStore = viewModel.getStore("events");
      
-      eventRecord.reject();
+      if(eventRecord.phantom){
+        eventRecord.erase();
+      } else {
+        eventRecord.reject();
+      }
       
       this.lookupReference("editEventWindow").hide();
     },
