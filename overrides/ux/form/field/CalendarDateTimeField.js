@@ -1,6 +1,6 @@
-Ext.define('Ext.ux.form.DateTimeField', {
+Ext.define('Ext.ux.form.CalendarDateTimeField', {
     extend: 'Ext.form.FieldContainer',
-    alias: 'widget.datetimefield',
+    alias: 'widget.calendardatetimefield',
     
     requires: [
         'Ext.form.field.Date',

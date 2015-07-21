@@ -18,6 +18,7 @@ Ext.define('CalendarPackage.view.MonthPanel', {
     
     startDay: 0, 
     numDays: 42, 
+    firstDate: null,
     
     focusable: true,
     autoScroll: true,
@@ -180,7 +181,6 @@ Ext.define('CalendarPackage.view.MonthPanel', {
             previousMonth = eDate.add(date, eDate.MONTH, -1),
             prevStart, current, disableToday, tempDate, setCellClass, html, cls,
             formatValue, value;
-
         if (startingPos < 0) {
             startingPos += 7;
         }
@@ -190,6 +190,8 @@ Ext.define('CalendarPackage.view.MonthPanel', {
         prevStart = eDate.getDaysInMonth(previousMonth) - startingPos;
 
         current = new Date(previousMonth.getFullYear(), previousMonth.getMonth(), prevStart, me.initHour);
+        
+        me.firstDate = Ext.clone(current);
         
         setCellClass = function(cellIndex, cls){
             var cell = cells[cellIndex];

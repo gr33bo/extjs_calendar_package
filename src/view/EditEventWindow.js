@@ -5,7 +5,7 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
     requires: [,
       "CalendarPackage.view.CalendarCombo",
       "Ext.form.Panel",
-      'Ext.ux.form.DateTimeField'
+      'Ext.ux.form.CalendarDateTimeField'
     ],
     
     reference: 'editEventWindow',
@@ -52,7 +52,7 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
                 margin: '0 0 0 0',
                 items: [
                   {
-                    xtype: 'datetimefield',
+                    xtype: 'calendardatetimefield',
                     fieldLabel: "Start",
                     reference: 'startDateField',
                     itemId: "startDateField",
@@ -64,7 +64,7 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
                     }
                   },
                   {
-                    xtype: 'datetimefield',
+                    xtype: 'calendardatetimefield',
                     fieldLabel: "End",
                     margin: '0 0 0 20',
                     reference: "endDateField",
