@@ -5,7 +5,7 @@ Ext.define('CalendarPackage.view.EditEventWindow', {
     requires: [,
       "CalendarPackage.view.CalendarCombo",
       "Ext.form.Panel",
-      'Ext.ux.form.CalendarDateTimeField'
+      'CalendarPackage.ux.form.CalendarDateTimeField'
     ],
     
     reference: 'editEventWindow',

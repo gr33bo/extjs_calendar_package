@@ -18,11 +18,11 @@ Ext.define('CalendarPackage.view.CalendarCombo', {
       this.createPicker();
     },
     listeners: {
-      boxready: function(combobox){
-         Ext.core.DomHelper.append(combobox.el.down('.x-form-text-wrap'), {
-            tag: 'div', cls: 'calendar-dot'
-        });
-      }
+//      boxready: function(combobox){
+//         Ext.core.DomHelper.append(combobox.el.down('.x-form-text-wrap'), {
+//            tag: 'div', cls: 'calendar-dot'
+//        });
+//      }
     }
     
 });
