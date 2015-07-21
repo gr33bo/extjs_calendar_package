@@ -120,12 +120,11 @@ div.calendar-package {
             border-collapse: collapse;
             height: 100%;
             z-index: 5;
-/*            height: calc(100% - 20px);
-            margin-top: 20px;*/
+            
 
-/*            tbody {
-              width: 100%;*/
-            /*}*/
+            &:not(:first-child) {
+              display: none !important;
+            }
 
             tr {
               td {
