@@ -311,6 +311,11 @@ Ext.define('CalendarPackage.ux.form.CalendarDateTimeField', {
         this.dateField.toggleInvalidCls(hasError);
     },
     
+    setReadOnly: function(readOnly){
+      this.timeField.setReadOnly(readOnly);
+      this.dateField.setReadOnly(readOnly);
+    },
+    
     setValidateDateOnly: function(validateDateOnly){
       this.validateDateOnly = validateDateOnly;
     }
